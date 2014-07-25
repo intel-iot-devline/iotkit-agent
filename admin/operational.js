@@ -46,6 +46,19 @@ var activate = function (code) {
     });
 };
 
+var isActivated = function (code) {
+    utils.getDeviceId(function (id) {
+        var cloud = Cloud.init(config, logger, id);
+        if(!cloud.isActivated()) {
+            logger.info("NO !! Device has not been activated");
+            process.exit(1);
+        } else {
+            logger.info("YES !! Device is already active");
+            process.exit(0);
+        }
+    });
+};
+
 function testConnection () {
     var host = config.connector[config.default_connector].host;
     utils.getDeviceId(function (id) {
@@ -79,5 +92,10 @@ module.exports = {
             .command('activate <activation_code>')
             .description('Activates the device.')
             .action(activate);
+
+        program
+            .command('isactivated')
+            .description('Confirms whether the device is activated or not.')
+            .action(isActivated);
     }
 };
