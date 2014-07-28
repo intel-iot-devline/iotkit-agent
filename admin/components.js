@@ -84,6 +84,21 @@ var registerComponents = function (comp, catalogid) {
     });
 };
 
+var isComponentsRegistered = function (comp) {
+    logger.info("Verifying registration for component '" + comp + "'..." );
+    var com = common.readFileToJson(getStoreFileName());
+
+    for(var i = 0; i < com.length; i++) {
+        if (com[i].name === comp) {
+            logger.info("Component '" + comp + "' is already registed !!");
+            process.exit(0);
+        }
+    }
+
+    logger.info("Component '" + comp + "' is not yet registed");
+    process.exit(1);
+};
+
 function registerObservation (comp, value) {
     utils.getDeviceId(function (id) {
         var cloud = Cloud.init(conf, logger, id);
@@ -134,6 +149,10 @@ module.exports = {
             .command('register <comp_name> <catalogid>')
             .description('Registers a component in the device.')
             .action(registerComponents);
+        program
+            .command('is-registered <comp_name>')
+            .description('Checks whether a component is already registered or not.')
+            .action(isComponentsRegistered);
         program
             .command('reset-components')
             .description('Clears the component list.')
