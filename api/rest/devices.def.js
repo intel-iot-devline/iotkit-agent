@@ -26,27 +26,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 "use strict";
-var httpClient = require('../../lib/httpClient');
-var AdminDef = require('./admin.def');
-var CatalogDef = require('./component.def');
-var DevicesDef = require('./devices.def');
+var config = require('../../config');
 
+var ConnectionOptions = require('./iot.connection.def.js');
+var GET_METHOD = 'GET';
+
+var apiconf = config.connector.rest;
+//variable to be returned
+var IoTKiT = {};
 /**
- * It passes to a callback the access token
  */
-module.exports.health = function(callback) {
-    var health = new AdminDef.HealthOption();
-    return httpClient.httpRequest(health, callback);
-};
-module.exports.getCatalog = function (data, callback) {
-    var catalog = new CatalogDef.CatalogOption(data);
-    return httpClient.httpRequest(catalog, callback);
-};
-module.exports.getDevices = function (data, callback) {
-    var devices = new DevicesDef.DevicesOption(data);
-    return httpClient.httpRequest(devices, callback);
-};
-module.exports.getExternalInfo = function (callback) {
-    var external = new AdminDef.ExternalInfoOption();
-    return httpClient.httpRequest(external, callback);
-};
+function DevicesOption(data) {
+    this.pathname = apiconf.path.deviceslist;
+    this.token = data.deviceToken;
+    ConnectionOptions.call(this);
+    this.method = GET_METHOD;
+}
+DevicesOption.prototype = new ConnectionOptions();
+DevicesOption.prototype.constructor = DevicesOption;
+IoTKiT.DevicesOption = DevicesOption;
+
+module.exports = IoTKiT;

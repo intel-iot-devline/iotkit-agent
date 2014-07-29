@@ -221,6 +221,20 @@ IoTKitCloud.prototype.catalog = function (callback) {
     });
 };
 
+IoTKitCloud.prototype.listdevices = function (callback) {
+    var me = this;
+    var data = {
+        deviceToken: me.secret.deviceToken,
+        deviceId: me.deviceId
+    };
+    me.proxy.getDevices(data , function (result) {
+        if (result) {
+            me.logger.debug("Device List Response : %j ", result);
+        }
+        callback(result);
+    });
+};
+
 exports.init = function(conf, logger, deviceId) {
     return new IoTKitCloud(conf, logger, deviceId);
 };

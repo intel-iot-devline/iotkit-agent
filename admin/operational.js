@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var logger = require("../lib/logger").init(),
     Cloud = require("../api/cloud.proxy"),
+    Message = require('../lib/agent-message'),
     utils = require("../lib/utils").init(),
     config = require('../config');
 
@@ -56,6 +57,27 @@ var isActivated = function (code) {
             logger.info("YES !! Device is already active");
             process.exit(0);
         }
+    });
+};
+
+var listAllDevices = function () {
+    logger.debug("Activation started ...");
+    utils.getDeviceId(function (id) {
+        var cloud = Cloud.init(config, logger, id);
+        cloud.activate(function (status) {
+            var r = 0;
+            if (status === 0) {
+                cloud.listdevices(function (devices) {
+                    if (devices) {
+                        console.log("Response %j", devices);
+                    }
+                    process.exit(0);
+                });
+            } else {
+                logger.error("Error in the registration process ...", status);
+                process.exit(1);
+            }
+        });
     });
 };
 
@@ -97,5 +119,10 @@ module.exports = {
             .command('isactivated')
             .description('Confirms whether the device is activated or not.')
             .action(isActivated);
+
+        program
+            .command('list-all-devices')
+            .description('Lists all the devices under the current account.')
+            .action(listAllDevices);
     }
 };

@@ -66,7 +66,8 @@
                     "catalog": "/v1/api/cmpcatalog",
                     "component": "/v1/api/cmpcatalog/{componentId}"
                 },
-                "health": "/v1/api/health"
+                "health": "/v1/api/health",
+                "deviceslist": "v1/api/devices"
             }
         }
     }
